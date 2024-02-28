@@ -79,5 +79,27 @@ ul {
 }
 
 body {
+  /* background-size: 100vw 100vh; */
+  /* background: linear-gradient(
+    119deg,
+    #d7e1ec 7.57%,
+    rgba(195, 205, 216, 0.83) 41.63%,
+    rgba(215, 225, 236, 0.69) 73.61%,
+    #c3cdd8 100%
+  ); */
+  /* background-repeat: no-repeat;
   background: linear-gradient(126deg, #b4d2ff 19.47%, #f0c7ff 97.63%);
+  background-size: cover; */
+  background: #bdc0c9;
+}
+
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  height: 100%;
+  width: 100%;
+}
+
+input {
+  all: unset;
+  outline: none;
 }

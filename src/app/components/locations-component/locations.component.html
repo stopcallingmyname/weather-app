@@ -1,0 +1,33 @@
+<section class="flex flex-col justify-center text-start w-full h-full gap-8">
+  <div class="flex flex-col">
+    <h1 class="text-3xl font-bold text-black/70">Weather</h1>
+    @if(address) {
+    <app-address-input
+      [placeholder]="'Search for a city or airport'"
+      [(value)]="address.city"
+      (valueChange)="onPlaceChanged()"
+    ></app-address-input>
+    }
+  </div>
+  <div class="grid grid-cols-2 place-items-center gap-4">
+    @if(address) { @for (location of savedLocations; track $index) {
+    <app-weather-card
+      class="w-full h-fit"
+      [location]="location"
+    ></app-weather-card>
+    } }
+  </div>
+</section>
+
+<!-- <section
+  class="flex flex-col-reverse overflow-hidden justify-center text-start w-full h-full gap-1 transition-all duration-400"
+>
+  <app-address-input
+    class="peer/title hover:translate-y-[-90%] relative z-10 flex-1 transition-all duration-400"
+  ></app-address-input>
+  <h1
+    class="peer-hover/title:opacity-0 peer-hover/title:translate-y-[-100%] h-full opacity-100 text-3xl font-bold text-black/70 transition-all duration-400"
+  >
+    Weather
+  </h1>
+</section> -->
