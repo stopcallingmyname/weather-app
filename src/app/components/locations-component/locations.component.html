@@ -1,16 +1,13 @@
 <section class="flex flex-col justify-center text-start w-full h-full gap-8">
   <div class="flex flex-col">
     <h1 class="text-3xl font-bold text-black/70">Weather</h1>
-    @if(address) {
     <app-address-input
       [placeholder]="'Search for a city or airport'"
-      [(value)]="address.city"
-      (valueChange)="onPlaceChanged()"
+      (locationChanged)="onPlaceChanged($event)"
     ></app-address-input>
-    }
   </div>
-  <div class="grid grid-cols-2 place-items-center gap-4">
-    @if(address) { @for (location of savedLocations; track $index) {
+  <div class="grid xs:grid-cols-2 place-items-center gap-4">
+    @if(this.location) { @for (location of this.savedLocations; track $index) {
     <app-weather-card
       class="w-full h-fit"
       [location]="location"

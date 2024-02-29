@@ -5,6 +5,7 @@ import { ILocation } from '../../types/location.interface';
 import { GeoLocationService } from '../../services/geo-location.service';
 import { catchError, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { StoreService } from '../../services/store.service';
 
 @Component({
   selector: 'app-locations',
@@ -14,27 +15,34 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrl: './locations.component.css',
 })
 export class LocationsComponent implements OnInit {
-  address: ILocation;
+  location: ILocation | undefined;
   savedLocations: ILocation[] = [];
+  private readonly SAVED_LOCATIONS: string = 'saved_locations';
 
-  constructor(private geoLocationService: GeoLocationService) {}
+  constructor(
+    private geoLocationService: GeoLocationService,
+    private storeService: StoreService
+  ) {}
 
   ngOnInit(): void {
+    const locationsFromStorage = this.storeService.getStoredData(
+      this.SAVED_LOCATIONS
+    );
+    if (locationsFromStorage) {
+      this.savedLocations = locationsFromStorage;
+    }
+
     this.fetchGeolocation();
   }
 
-  onPlaceChanged(): void {
-    this.geoLocationService
-      .getCityCoordinates(this.address.city)
-      .subscribe((data) => {
-        console.log('address: ' + this.address.city);
-        this.fetchCityNameByLocation(data.lat, data.lng);
-      });
+  onPlaceChanged(event: ILocation): void {
+    this.location = event;
+    this.saveLocation(this.savedLocations, this.location);
   }
 
   fetchGeolocation(): void {
     this.geoLocationService
-      .getGeolocation()
+      .getCurrentGeolocation()
       .pipe(
         catchError((error: HttpErrorResponse) => {
           // return this.errorService.errorHandler(error);
@@ -42,14 +50,14 @@ export class LocationsComponent implements OnInit {
         })
       )
       .subscribe((coordinates) => {
-        this.fetchCityNameByLocation(
+        this.fetchPlaceByGeoLocation(
           coordinates.latitude,
           coordinates.longitude
         );
       });
   }
 
-  fetchCityNameByLocation(lat: number, lon: number): void {
+  fetchPlaceByGeoLocation(lat: number, lon: number): void {
     this.geoLocationService
       .reverseGeocode(lat, lon)
       .pipe(
@@ -59,8 +67,37 @@ export class LocationsComponent implements OnInit {
         })
       )
       .subscribe((address: ILocation) => {
-        this.address = address;
-        this.savedLocations.push({ ...this.address });
+        const result: ILocation = {
+          city: address.city,
+          country: address.country,
+          lat: address.lat,
+          lon: address.lon,
+        };
+        this.location = result;
+
+        this.saveLocation(this.savedLocations, this.location);
       });
+  }
+
+  saveLocation(savedLocations: ILocation[], location: ILocation): void {
+    const locationsFromStorage: ILocation[] = this.storeService.getStoredData(
+      this.SAVED_LOCATIONS
+    ) as ILocation[];
+
+    if (
+      locationsFromStorage &&
+      locationsFromStorage.some(
+        (storedLocation) =>
+          storedLocation.city == this.location?.city &&
+          storedLocation.country == this.location?.country
+      )
+    ) {
+      console.log('Retrieving saved location(s) from storage..');
+      savedLocations = locationsFromStorage;
+    } else {
+      console.log('Saving location to storage..');
+      savedLocations.push(location);
+      this.storeService.storeData(this.SAVED_LOCATIONS, savedLocations);
+    }
   }
 }

@@ -17,6 +17,6 @@ export class WeatherCardComponent {
   redirectToWeatherDetails() {
     this.router.navigate(['/weather-details', this.location.city], {
       queryParams: { lat: this.location.lat, lon: this.location.lon },
-    });
+    }); // Переадресация на маршрут '/weather/city'
   }
 }

@@ -10,7 +10,8 @@ import {
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import {} from '@angular/google-maps';
-import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
+import { ILocation } from '../../types/location.interface';
+import { GeoLocationService } from '../../services/geo-location.service';
 
 @Component({
   selector: 'app-address-input',
@@ -22,37 +23,45 @@ import { Options } from 'ngx-google-places-autocomplete/objects/options/options'
 export class AddressInputComponent implements OnInit, AfterViewInit {
   @ViewChild('inputField', { static: true })
   inputRef: ElementRef<HTMLInputElement>;
-  @Input() value: string;
+  @Input() value: string | undefined;
   @Input() placeholder: string;
-  @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
+  @Output() locationChanged: EventEmitter<ILocation> =
+    new EventEmitter<ILocation>();
 
   autocomplete: google.maps.places.Autocomplete | undefined;
 
-  ngOnInit() {}
+  constructor(private geoLocationService: GeoLocationService) {}
+
+  ngOnInit() {
+    this.ClearInput();
+  }
 
   ngAfterViewInit() {
     this.autocomplete = new google.maps.places.Autocomplete(
-      this.inputRef.nativeElement
+      this.inputRef.nativeElement,
+      {
+        types: ['(cities)'],
+        fields: ['address_components', 'formatted_address', 'geometry', 'name'],
+      }
     );
 
     this.autocomplete.addListener('place_changed', () => {
       const place = this.autocomplete?.getPlace();
 
-      if (place && place.address_components && place.geometry) {
-        const city = place.address_components.find((component) =>
-          component.types.includes('locality')
-        );
-        if (city) {
-          this.value = city.long_name;
-          this.valueChange.emit(this.value);
-        }
-      }
+      this.geoLocationService
+        .getLocationData(place)
+        .subscribe((result?: ILocation | null) => {
+          if (result) {
+            this.locationChanged.emit(result);
+            // this.value = result.city;
+          }
+        });
+      this.ClearInput();
     });
   }
 
-  // @HostListener('click', ['$event.target']) onClick(target: HTMLElement) {
-  //   if (target.classList.contains('input-wrapper')) {
-  //     this.inputField.nativeElement.focus();
-  //   }
-  // }
+  ClearInput(): void {
+    this.value = '';
+    this.inputRef.nativeElement.value = '';
+  }
 }
