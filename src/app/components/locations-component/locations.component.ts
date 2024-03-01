@@ -1,48 +1,56 @@
-import { AfterViewInit, Component, NgZone, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  NgZone,
+  OnInit,
+  Optional,
+} from '@angular/core';
 import { AddressInputComponent } from '../address-input/address-input.component';
 import { WeatherCardComponent } from '../weather-card/weather-card.component';
 import { ILocation } from '../../types/location.interface';
 import { GeoLocationService } from '../../services/geo-location.service';
 import { catchError, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
-import { StoreService } from '../../services/store.service';
 import { Router } from '@angular/router';
+import {
+  MatBottomSheet,
+  MatBottomSheetModule,
+  MatBottomSheetRef,
+} from '@angular/material/bottom-sheet';
+import { WeatherDetailsComponent } from '../weather-component/weather-details.component';
 
 @Component({
   selector: 'app-locations',
   standalone: true,
-  imports: [AddressInputComponent, WeatherCardComponent],
+  imports: [AddressInputComponent, MatBottomSheetModule, WeatherCardComponent],
   templateUrl: './locations.component.html',
   styleUrl: './locations.component.css',
 })
 export class LocationsComponent implements OnInit, AfterViewInit {
   location: ILocation | undefined;
   savedLocations: ILocation[] = [];
-  private readonly SAVED_LOCATIONS: string = 'saved_locations';
+  bottomSheetRef: MatBottomSheetRef;
 
   constructor(
     private geoLocationService: GeoLocationService,
-    private storeService: StoreService,
     private router: Router,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private bottomSheet: MatBottomSheet
   ) {}
 
   ngOnInit(): void {
-    const locationsFromStorage = this.storeService.getStoredData(
-      this.SAVED_LOCATIONS
-    );
-    if (locationsFromStorage) {
-      this.savedLocations = locationsFromStorage;
-    }
+    this.savedLocations = this.geoLocationService.getSavedLocations();
     this.fetchGeolocation();
   }
 
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+    this.savedLocations = this.geoLocationService.getSavedLocations();
+  }
 
   onPlaceChanged(event: ILocation): void {
     this.location = event;
-    this.saveLocation(this.savedLocations, this.location);
-    this.redirectToWeatherDetails(this.location);
+    // this.redirectToWeatherDetails(this.location);
+    this.openLocationWeatherDetails();
   }
 
   fetchGeolocation(): void {
@@ -79,39 +87,32 @@ export class LocationsComponent implements OnInit, AfterViewInit {
           lon: address.lon,
         };
         this.location = result;
-        this.saveLocation(this.savedLocations, this.location);
+
+        if (!this.geoLocationService.isLocationSaved(this.location)) {
+          this.openLocationWeatherDetails();
+        }
       });
-  }
-
-  saveLocation(savedLocations: ILocation[], location: ILocation): void {
-    const locationsFromStorage: ILocation[] = this.storeService.getStoredData(
-      this.SAVED_LOCATIONS
-    ) as ILocation[];
-
-    if (
-      locationsFromStorage &&
-      locationsFromStorage.some(
-        (storedLocation) =>
-          storedLocation.city == this.location?.city &&
-          storedLocation.country == this.location?.country
-      )
-    ) {
-      console.log('Retrieving saved location(s) from storage..');
-      savedLocations = locationsFromStorage;
-    } else {
-      console.log('Saving location to storage..');
-      savedLocations.push(location);
-      this.storeService.storeData(this.SAVED_LOCATIONS, savedLocations);
-    }
   }
 
   redirectToWeatherDetails(location: ILocation) {
     if (this.location) {
       this.ngZone.run(() => {
-        this.router.navigate(['/weather-details', location.city], {
-          queryParams: { lat: location.lat, lon: location.lon },
-        });
+        this.router.navigate(
+          ['/weather-details', location.country, location.city],
+          {
+            queryParams: {
+              lat: location.lat,
+              lon: location.lon,
+            },
+          }
+        );
       });
     }
+  }
+
+  openLocationWeatherDetails(): void {
+    this.bottomSheetRef = this.bottomSheet.open(WeatherDetailsComponent, {
+      data: { location: this.location },
+    });
   }
 }

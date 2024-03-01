@@ -1,0 +1,13 @@
+::ng-deep .mat-bottom-sheet-container {
+  border-top-left-radius: 2rem !important;
+  border-top-right-radius: 2rem !important;
+  border: 1px solid white !important;
+  padding: 16px !important;
+  backdrop-filter: blur(10px) !important;
+  background-color: rgb(255 255 255 / 0.25) !important;
+  min-height: 95vh !important;
+}
+
+::ng-deep .cdk-overlay-backdrop {
+  opacity: 0 !important;
+}

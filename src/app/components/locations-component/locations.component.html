@@ -5,6 +5,7 @@
       [placeholder]="'Search for a city or airport'"
       (locationChanged)="onPlaceChanged($event)"
     ></app-address-input>
+    <button (click)="this.openLocationWeatherDetails()">Open Modal</button>
   </div>
   <div class="grid xs:grid-cols-2 place-items-center gap-4">
     @for (location of this.savedLocations; track $index) {
@@ -15,16 +16,3 @@
     }
   </div>
 </section>
-
-<!-- <section
-  class="flex flex-col-reverse overflow-hidden justify-center text-start w-full h-full gap-1 transition-all duration-400"
->
-  <app-address-input
-    class="peer/title hover:translate-y-[-90%] relative z-10 flex-1 transition-all duration-400"
-  ></app-address-input>
-  <h1
-    class="peer-hover/title:opacity-0 peer-hover/title:translate-y-[-100%] h-full opacity-100 text-3xl font-bold text-black/70 transition-all duration-400"
-  >
-    Weather
-  </h1>
-</section> -->

@@ -5,5 +5,9 @@ import { LocationsComponent } from './components/locations-component/locations.c
 export const routes: Routes = [
   { path: '', redirectTo: 'locations', pathMatch: 'full' },
   { path: 'locations', component: LocationsComponent },
-  { path: '**', component: WeatherDetailsComponent },
+  {
+    path: 'weather-details/:country/:city',
+    component: WeatherDetailsComponent,
+  },
+  { path: '**', component: LocationsComponent },
 ];

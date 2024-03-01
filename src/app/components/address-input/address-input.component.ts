@@ -34,9 +34,6 @@ export class AddressInputComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.ClearInput();
-  }
-
-  ngAfterViewInit() {
     this.autocomplete = new google.maps.places.Autocomplete(
       this.inputRef.nativeElement,
       {
@@ -44,20 +41,29 @@ export class AddressInputComponent implements OnInit, AfterViewInit {
         fields: ['address_components', 'formatted_address', 'geometry', 'name'],
       }
     );
+  }
 
-    this.autocomplete.addListener('place_changed', () => {
-      const place = this.autocomplete?.getPlace();
+  ngAfterViewInit() {
+    if (this.autocomplete) {
+      this.autocomplete.addListener('place_changed', () => {
+        const place = this.autocomplete?.getPlace();
 
-      this.geoLocationService
-        .getLocationData(place)
-        .subscribe((result?: ILocation | null) => {
-          if (result) {
-            this.locationChanged.emit(result);
-            // this.value = result.city;
-          }
-        });
-      this.ClearInput();
-    });
+        this.geoLocationService
+          .getLocationData(place)
+          .subscribe((result?: ILocation | null) => {
+            if (result) {
+              this.locationChanged.emit(result);
+              // this.value = result.city;
+            }
+          });
+        this.ClearInput();
+      });
+    }
+  }
+
+  onChange(event: any) {
+    this.ClearInput();
+    if (this.autocomplete) this.autocomplete.set('place', null);
   }
 
   ClearInput(): void {

@@ -4,6 +4,14 @@ const { transform } = require("typescript");
 module.exports = {
   content: ["./src/**/*.{html,ts}"],
   theme: {
+    screens: {
+      xs: "320px",
+      sm: "576px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
+      "2xl": "1536px",
+    },
     extend: {
       animation: {
         wiggle: "wiggle 1s ease-in-out infinite",

@@ -8,6 +8,7 @@ import { LocationsComponent } from './components/locations-component/locations.c
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, LocationsComponent, WeatherDetailsComponent],
+
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
   providers: [DatePipe],
