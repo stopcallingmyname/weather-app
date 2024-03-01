@@ -1,0 +1,27 @@
+<section class="flex flex-row content-center justify-between w-full h-full">
+  <div class="flex flex-col w-fit h-fit">
+    <p class="font-semibold text-xl text-black/70">
+      {{ this.data.location.city }}, {{ this.data.location.country }}
+    </p>
+    <app-date></app-date>
+  </div>
+  @if (this.isLocationSaved) {
+  <mat-icon
+    aria-hidden="false"
+    aria-label="view_cozy icon"
+    fontIcon="view_cozy"
+    (click)="redirectToLocations()"
+  ></mat-icon
+  >} @else {
+  <button (click)="saveLocation()">Add</button>
+
+  }
+
+  <!-- <div
+    class="w-fit h-fit m-5 p-5 border border-solid border-white rounded-lg bg-white/25"
+  >
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus,
+    dolore aliquid. Eius et omnis accusamus molestias cum? Deserunt perferendis,
+    dicta impedit natus id fuga, beatae possimus officia delectus eaque ratione!
+  </div> -->
+</section>

@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+font,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-size: 100%;
+  font-family: inherit;
+  vertical-align: baseline;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  /* background-size: 100vw 100vh;
+  background: linear-gradient(
+    119deg,
+    #d7e1ec 7.57%,
+    rgba(195, 205, 216, 0.83) 41.63%,
+    rgba(215, 225, 236, 0.69) 73.61%,
+    #c3cdd8 100%
+  );
+  background-repeat: no-repeat;
+  background: linear-gradient(126deg, #b4d2ff 19.47%, #f0c7ff 97.63%);
+  background-size: cover; */
+  background: #bdc0c9;
+}
+
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  height: 100%;
+  width: 100%;
+}
+
+input {
+  all: unset;
+  outline: none;
+}

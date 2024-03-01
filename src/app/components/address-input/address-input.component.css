@@ -1,0 +1,37 @@
+/* Google Places Autocomplete Styling */
+::ng-deep .pac-container {
+  border: 1px solid white;
+  border-radius: 0.5rem;
+  background-color: rgb(255 255 255 / 0.25);
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 500ms;
+  box-shadow: none;
+  backdrop-filter: blur(15px);
+}
+
+::ng-deep .pac-container:after {
+  /* Disclaimer: not needed to show 'powered by Google' if also a Google Map is shown */
+  background-image: none !important;
+  height: 0px;
+}
+
+::ng-deep .pac-item {
+  color: rgb(0 0 0 / 0.7);
+  padding: 5px;
+  font-size: 16px;
+}
+
+::ng-deep .pac-matched {
+  color: rgb(0 0 0 / 0.7);
+}
+
+::ng-deep .pac-item-query {
+  color: rgb(0 0 0 / 0.7);
+}
+
+::ng-deep .pac-item-selected {
+  color: rgb(0 0 0 / 0.7);
+  background: transparent;
+  background: -webkit-transparent;
+}
