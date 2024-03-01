@@ -7,12 +7,12 @@
     ></app-address-input>
   </div>
   <div class="grid xs:grid-cols-2 place-items-center gap-4">
-    @if(this.location) { @for (location of this.savedLocations; track $index) {
+    @for (location of this.savedLocations; track $index) {
     <app-weather-card
       class="w-full h-fit"
       [location]="location"
     ></app-weather-card>
-    } }
+    }
   </div>
 </section>
 

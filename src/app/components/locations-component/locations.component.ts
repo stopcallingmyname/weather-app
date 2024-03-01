@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, NgZone, OnInit } from '@angular/core';
 import { AddressInputComponent } from '../address-input/address-input.component';
 import { WeatherCardComponent } from '../weather-card/weather-card.component';
 import { ILocation } from '../../types/location.interface';
@@ -6,6 +6,7 @@ import { GeoLocationService } from '../../services/geo-location.service';
 import { catchError, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { StoreService } from '../../services/store.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-locations',
@@ -14,14 +15,16 @@ import { StoreService } from '../../services/store.service';
   templateUrl: './locations.component.html',
   styleUrl: './locations.component.css',
 })
-export class LocationsComponent implements OnInit {
+export class LocationsComponent implements OnInit, AfterViewInit {
   location: ILocation | undefined;
   savedLocations: ILocation[] = [];
   private readonly SAVED_LOCATIONS: string = 'saved_locations';
 
   constructor(
     private geoLocationService: GeoLocationService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private router: Router,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -31,13 +34,15 @@ export class LocationsComponent implements OnInit {
     if (locationsFromStorage) {
       this.savedLocations = locationsFromStorage;
     }
-
     this.fetchGeolocation();
   }
+
+  ngAfterViewInit(): void {}
 
   onPlaceChanged(event: ILocation): void {
     this.location = event;
     this.saveLocation(this.savedLocations, this.location);
+    this.redirectToWeatherDetails(this.location);
   }
 
   fetchGeolocation(): void {
@@ -74,7 +79,6 @@ export class LocationsComponent implements OnInit {
           lon: address.lon,
         };
         this.location = result;
-
         this.saveLocation(this.savedLocations, this.location);
       });
   }
@@ -98,6 +102,16 @@ export class LocationsComponent implements OnInit {
       console.log('Saving location to storage..');
       savedLocations.push(location);
       this.storeService.storeData(this.SAVED_LOCATIONS, savedLocations);
+    }
+  }
+
+  redirectToWeatherDetails(location: ILocation) {
+    if (this.location) {
+      this.ngZone.run(() => {
+        this.router.navigate(['/weather-details', location.city], {
+          queryParams: { lat: location.lat, lon: location.lon },
+        });
+      });
     }
   }
 }
