@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { DateComponent } from '../date-component/date.component';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,42 +19,52 @@ import { DatePipe } from '@angular/common';
   styleUrl: './weather-details.component.css',
 })
 export class WeatherDetailsComponent implements OnInit {
-  // location: ILocation;
+  location: ILocation;
   isLocationSaved: boolean = false;
 
   constructor(
-    // private route: ActivatedRoute,
+    private route: ActivatedRoute,
     private router: Router,
     private geoLocationService: GeoLocationService,
-    @Inject(MAT_BOTTOM_SHEET_DATA) public data: { location: ILocation }
+    @Optional()
+    @Inject(MAT_BOTTOM_SHEET_DATA)
+    public dataFromBottomSheet: { location: ILocation }
   ) {}
 
   ngOnInit(): void {
-    // this.route.params.subscribe((params) => {
-    //   const city = params['city'];
-    //   const country = params['country'];
-    //   const latParam = this.route.snapshot.queryParamMap.get('lat');
-    //   const lonParam = this.route.snapshot.queryParamMap.get('lon');
+    if (this.dataFromBottomSheet && this.dataFromBottomSheet.location) {
+      this.location = this.dataFromBottomSheet.location;
+      this.isLocationSaved = this.geoLocationService.isLocationSaved(
+        this.location
+      );
+    } else {
+      this.route.params.subscribe((params) => {
+        const city = params['city'];
+        const country = params['country'];
 
-    //   if (latParam && lonParam) {
-    //     this.location = {
-    //       city: city,
-    //       country: country,
-    //       lat: +latParam,
-    //       lon: +lonParam,
-    //     };
-    //   }
-    // });
-    this.isLocationSaved = this.geoLocationService.isLocationSaved(
-      this.data.location
-    );
+        if (city && country) {
+          this.route.queryParams.subscribe((queryParams) => {
+            const latParam = queryParams['lat'];
+            const lonParam = queryParams['lon'];
+
+            if (latParam && lonParam) {
+              // Создаем объект location
+              this.location = {
+                city: city,
+                country: country,
+                lat: +latParam,
+                lon: +lonParam,
+              };
+            }
+          });
+        }
+      });
+    }
   }
 
-  ngAfterViewInit(): void {}
-
   saveLocation(): void {
-    if (this.data.location) {
-      this.geoLocationService.saveLocation(this.data.location);
+    if (this.location) {
+      this.geoLocationService.saveLocation(this.location);
     } else {
       this.redirectToLocations();
     }

@@ -12,15 +12,14 @@
       class="w-full font-medium caret-white"
       #inputField
       type="text"
-      [placeholder]="placeholder"
-      [value]="value"
-      (change)="onChange($event)"
+      [value]="inputValue"
+      (input)="handleInput($event)"
+      (place_changed)="handlePlaceChanged()"
     />
   </div>
 
   <button
     class="bg-transparent w-0 opacity-0 peer-hover/button:w-16 peer-hover/button:opacity-100 font-medium text-black/70 active:text-black/40 transition-all duration-400"
-    (click)="ClearInput()"
   >
     Cancel
   </button>

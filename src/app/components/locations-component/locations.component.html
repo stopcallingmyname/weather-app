@@ -2,10 +2,9 @@
   <div class="flex flex-col">
     <h1 class="text-3xl font-bold text-black/70">Weather</h1>
     <app-address-input
-      [placeholder]="'Search for a city or airport'"
+      [placeholderText]="'Search for a city or airport'"
       (locationChanged)="onPlaceChanged($event)"
     ></app-address-input>
-    <button (click)="this.openLocationWeatherDetails()">Open Modal</button>
   </div>
   <div class="grid xs:grid-cols-2 place-items-center gap-4">
     @for (location of this.savedLocations; track $index) {
