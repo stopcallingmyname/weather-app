@@ -49,8 +49,7 @@ export class LocationsComponent implements OnInit, AfterViewInit {
 
   onPlaceChanged(event: ILocation): void {
     this.location = event;
-    // this.redirectToWeatherDetails(this.location);
-    this.openLocationWeatherDetails();
+    this.openLocationWeatherDetails(this.location);
   }
 
   fetchGeolocation(): void {
@@ -89,7 +88,7 @@ export class LocationsComponent implements OnInit, AfterViewInit {
         this.location = result;
 
         if (!this.geoLocationService.isLocationSaved(this.location)) {
-          this.openLocationWeatherDetails();
+          this.openLocationWeatherDetails(this.location);
         }
       });
   }
@@ -110,9 +109,10 @@ export class LocationsComponent implements OnInit, AfterViewInit {
     }
   }
 
-  openLocationWeatherDetails(): void {
+  openLocationWeatherDetails(location: ILocation): void {
     this.bottomSheetRef = this.bottomSheet.open(WeatherDetailsComponent, {
-      data: { location: this.location },
+      data: { location: location },
     });
+    console.log('opened');
   }
 }

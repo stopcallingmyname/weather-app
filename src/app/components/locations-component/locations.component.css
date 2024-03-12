@@ -11,3 +11,11 @@
 ::ng-deep .cdk-overlay-backdrop {
   opacity: 0 !important;
 }
+
+::ng-deep .cdk-overlay-container {
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}

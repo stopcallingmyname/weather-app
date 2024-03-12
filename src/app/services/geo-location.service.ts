@@ -53,7 +53,7 @@ export class GeoLocationService {
     place: google.maps.places.PlaceResult | undefined
   ): Observable<ILocation | null> {
     if (place && place.address_components && place.geometry) {
-      const country = place.address_components.find((component) =>
+      const country = place.address_components.find((component: any) =>
         component.types.includes('country')
       );
 
