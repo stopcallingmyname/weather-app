@@ -1,19 +1,56 @@
-<section class="flex flex-row content-center justify-between w-full h-full">
-  <div class="flex flex-col w-fit h-fit">
-    <p class="font-semibold text-xl text-black/70">
-      {{ this.location.city }}, {{ this.location.country }}
-    </p>
+<section
+  class="flex flex-col items-center justify-center content-center gap-2 w-full h-fit"
+>
+  <div class="flex flex-row content-center justify-between w-full h-full">
+    <div class="flex flex-col w-fit h-fit">
+      <p class="font-medium text-2xl text-black/70">
+        {{ this.location.city }}, {{ this.location.country }}
+      </p>
 
-    <app-date></app-date>
+      <app-date></app-date>
+    </div>
+    @if (this.isLocationSaved) {
+    <mat-icon
+      aria-hidden="false"
+      aria-label="view_cozy icon"
+      fontIcon="view_cozy"
+      (click)="redirectToLocations()"
+      class="text-black/70"
+    ></mat-icon
+    >} @else {
+    <button (click)="saveLocation()">Add</button>
+    }
   </div>
-  @if (this.isLocationSaved) {
-  <mat-icon
-    aria-hidden="false"
-    aria-label="view_cozy icon"
-    fontIcon="view_cozy"
-    (click)="redirectToLocations()"
-  ></mat-icon
-  >} @else {
-  <button (click)="saveLocation()">Add</button>
-  }
+  <div class="flex flex-col items-center justify-center">
+    <img
+      class="size-72 xs:size-72"
+      src="../../../assets/images/icons/02d.svg"
+      alt="weather_icon"
+    />
+    <div class="flex flex-col items-center gap-6">
+      <div class="flex flex-col items-center">
+        <p class="text-6xl font-medium text-black/70">18°</p>
+        <p class="text-3xl font-medium text-black/70">Cloudy</p>
+      </div>
+      <div
+        class="flex flex-row gap-3 xs:gap-6 content-center justify-between w-full h-fit px-4 py-1 xs:px-6 xs:py-3 border border-solid border-white rounded-xl xs:rounded-2xl bg-white/25 backdrop-blur-lg"
+      >
+        <div class="flex flex-col items-center">
+          <p class="text-sm xs:text-md font-normal text-gray-500">Wind</p>
+          <p class="text-sm xs:text-md font-semibold text-black/70">26km/h</p>
+        </div>
+        <span class="border-l border-solid border-gray-400"></span>
+        <div class="flex flex-col items-center">
+          <p class="text-sm xs:text-md font-normal text-gray-500">Humidity</p>
+          <p class="text-sm xs:text-md font-semibold text-black/70">90%</p>
+        </div>
+        <span class="border-l border-solid border-gray-400"></span>
+        <div class="flex flex-col items-center">
+          <p class="text-sm xs:text-md font-normal text-gray-500">Pressure</p>
+          <p class="text-sm xs:text-md font-semibold text-black/70">1005hPa</p>
+        </div>
+      </div>
+      <app-weather-chart class="w-full"></app-weather-chart>
+    </div>
+  </div>
 </section>

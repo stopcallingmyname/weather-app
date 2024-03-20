@@ -1,4 +1,10 @@
-import { Component, Inject, OnInit, Optional } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnInit,
+  Optional,
+} from '@angular/core';
 import { DateComponent } from '../date-component/date.component';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,11 +15,17 @@ import {
   MatBottomSheetModule,
 } from '@angular/material/bottom-sheet';
 import { DatePipe } from '@angular/common';
+import { WeatherChartComponent } from '../weather-chart/weather-chart.component';
 
 @Component({
   selector: 'app-weather-details',
   standalone: true,
-  imports: [DateComponent, MatIconModule, MatBottomSheetModule],
+  imports: [
+    DateComponent,
+    MatIconModule,
+    MatBottomSheetModule,
+    WeatherChartComponent,
+  ],
   providers: [DatePipe],
   templateUrl: './weather-details.component.html',
   styleUrl: './weather-details.component.css',
@@ -28,15 +40,13 @@ export class WeatherDetailsComponent implements OnInit {
     private geoLocationService: GeoLocationService,
     @Optional()
     @Inject(MAT_BOTTOM_SHEET_DATA)
-    public dataFromBottomSheet: { location: ILocation }
+    public dataFromBottomSheet: { location: ILocation },
+    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     if (this.dataFromBottomSheet && this.dataFromBottomSheet.location) {
       this.location = this.dataFromBottomSheet.location;
-      this.isLocationSaved = this.geoLocationService.isLocationSaved(
-        this.location
-      );
     } else {
       this.route.params.subscribe((params) => {
         const city = params['city'];
@@ -48,7 +58,6 @@ export class WeatherDetailsComponent implements OnInit {
             const lonParam = queryParams['lon'];
 
             if (latParam && lonParam) {
-              // Создаем объект location
               this.location = {
                 city: city,
                 country: country,
@@ -60,11 +69,20 @@ export class WeatherDetailsComponent implements OnInit {
         }
       });
     }
+    this.updateIsLocationSaved();
+  }
+
+  updateIsLocationSaved(): void {
+    this.isLocationSaved = this.geoLocationService.isLocationSaved(
+      this.location
+    );
+    this.changeDetectorRef.detectChanges();
   }
 
   saveLocation(): void {
     if (this.location) {
       this.geoLocationService.saveLocation(this.location);
+      this.updateIsLocationSaved();
     } else {
       this.redirectToLocations();
     }
